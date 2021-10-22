@@ -1,0 +1,4 @@
+[submodule "third-party/binutils-gdb"]
+	path = third-party/binutils-gdb
+	url = git:////sourceware.org/git/binutils-gdb.git
+	branch = binutils-2_37-branch
