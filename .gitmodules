@@ -1,11 +1,11 @@
 [submodule "third-party/binutils-gdb"]
-	path = toolchains/binutils-gdb
+	path = toolchain/binutils-gdb
 	url = git://sourceware.org/git/binutils-gdb.git
 	branch = binutils-2_37-branch
 [submodule "third-party/gcc"]
-	path = toolchains/gcc
+	path = toolchain/gcc
 	url = git://gcc.gnu.org/git/gcc.git
 	branch = releases/gcc-11
 [submodule "third-party/limine"]
-	path = toolchains/limine
+	path = toolchain/limine
 	url = git@github.com:limine-bootloader/limine.git
