@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -x
 
 smirk_dir="$(cd "$(dirname "$0")" >/dev/null 2>&1; cd ..; cd ..; pwd -P)"
 toolchain_dir="$smirk_dir/toolchain"
