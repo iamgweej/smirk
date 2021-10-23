@@ -51,6 +51,7 @@ echo "Building '$profile' to '$build_dir'"
 # === Build toolchain ===
 
 toolchain_prefix=$build_dir/toolchain
+toolchain_share=$toolchain_prefix/share
 export PATH="$toolchain_prefix/bin:$PATH"
 
 if [[ ! -d  $toolchain_prefix ]]; then
@@ -100,6 +101,27 @@ if [[ ! -d  $toolchain_prefix ]]; then
     popd
 fi
 
+# === Building Bootloader ===
+if [[ $profile == "i686-pc" ]]; then
+    if [[ ! -f $toolchain_prefix/bin/limine-install ]]; then
+        pushd `pwd`
+
+        echo "Building bootloader"
+        limine_src_dir=$toolchain_dir/limine
+
+        cd $limine_src_dir
+        time make -j$((`nproc`*2))
+
+        make install PREFIX=$toolchain_prefix
+
+        # Limeine
+
+        popd
+    else
+        echo "limine-install exists - continuing"
+    fi
+fi
+
 # === Build Smirk ===
 
 echo "Building Smirk"
@@ -116,21 +138,24 @@ if [[ $? != 0 ]]; then exit 1; fi
 # === Make Disk ===
 
 
-if [[ $profile == "amd64-pc" ]]; then
+if [[ $profile == "i686-pc" ]]; then
     echo "Creating Drive"
+
     smirk_drive_file=$build_dir/drive.hdd
+    smirk_iso_dir=$build_dir/smirk_iso
+    smirk_iso=$build_dir/smirk.iso
 
-    dd if=/dev/zero bs=1M count=64 of=$smirk_drive_file
+    mkdir $smirk_iso_dir
 
-    parted -s $smirk_drive_file mklabel msdos
-    parted -s $smirk_drive_file mkpart primary 1 100%
+    cp $smirk_build_dir/kernel.elf $toolchain_dir/limine.cfg $toolchain_share/limine/limine.sys \
+       $toolchain_share/limine/limine-cd.bin $toolchain_share/limine/limine-eltorito-efi.bin $smirk_iso_dir
 
-    echfs-utils -m -p0 $smirk_drive_file quick-format 32768
-    echfs-utils -m -p0 $smirk_drive_file import $smirk_build_dir/kernel.elf kernel.elf
-    echfs-utils -m -p0 $smirk_drive_file import $smirk_dir/limine.cfg limine.cfg
+    xorriso -as mkisofs -b limine-cd.bin \
+            -no-emul-boot -boot-load-size 4 -boot-info-table \
+            --efi-boot limine-eltorito-efi.bin \
+            -efi-boot-part --efi-boot-image --protective-msdos-label \
+            $smirk_iso_dir -o $smirk_iso
 
-    echfs-utils -m -p0 $smirk_drive_file import $toolchain_dir/limine/stage2.map stage2.map
-
-    limine-install $smirk_drive_file
+    limine-install $smirk_iso
 fi
 

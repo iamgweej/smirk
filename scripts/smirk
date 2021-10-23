@@ -111,6 +111,12 @@ function clean {
     echo "rm -rf $build_dir/drive.hdd"
     rm -rf $build_dir/drive.hdd
 
+    echo "rm -rf $build_dir/smirk_iso"
+    rm -rf $build_dir/smirk_iso
+
+    echo "rm -rf $build_dir/smirk.iso"
+    rm -rf $build_dir/smirk.iso
+
     exit $EXIT_SUCCESS
 }
 
