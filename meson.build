@@ -18,6 +18,12 @@ link_args = []
 
 subdir('kernel')
 
+
+foreach source : source_files
+    source_name = '@0@'.format(source)
+    message(source_name)
+endforeach
+
 kernel = executable('kernel',
                     [source_files],
                     name_suffix: 'elf',
