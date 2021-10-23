@@ -48,16 +48,19 @@ void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id)
 
 void _start(struct stivale2_struct *stivale2_struct)
 {
-    struct stivale2_struct_tag_terminal *term_str_tag = NULL;
-    term_str_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_TERMINAL_ID);
+    struct stivale2_struct_tag_framebuffer *tag_framebuffer = NULL;
+    tag_framebuffer = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
 
-    if (NULL == term_str_tag)
+    if (NULL == tag_framebuffer)
     {
         goto hang;
     }
 
-    void (*term_write)(uint64_t ptr, uint64_t length) = (void *)(uintptr_t)term_str_tag->term_write;
-    term_write((uintptr_t)STARTUP_MESSAGE, sizeof(STARTUP_MESSAGE) - 1);
+    uint8_t *framebuffer_addr = (uint8_t *)(uintptr_t)tag_framebuffer->framebuffer_addr;
+
+    for (size_t i = 0; i < 128; i++) {
+        framebuffer_addr[i] = 0xff;
+    }
 
 hang:
     for (;;)
