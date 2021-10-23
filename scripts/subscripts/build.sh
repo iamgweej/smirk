@@ -20,7 +20,7 @@ profile=$1
 
 case $profile in
     i686-pc)
-        target=i686-none-elf
+        target=i686-elf
         ;;
     arm64-raspi3)
         target=aarch64-none-elf
