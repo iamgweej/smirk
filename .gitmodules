@@ -2,3 +2,7 @@
 	path = third-party/binutils-gdb
 	url = git:////sourceware.org/git/binutils-gdb.git
 	branch = binutils-2_37-branch
+[submodule "third-party/gcc"]
+	path = third-party/gcc
+	url = git://gcc.gnu.org/git/gcc.git
+	branch = releases/gcc-11
