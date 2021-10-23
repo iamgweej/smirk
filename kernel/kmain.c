@@ -28,11 +28,11 @@ static struct stivale2_header_tag_framebuffer framebuffer_hdr_tag = {
  * This is fine since we're using brace initialization which zeros out all other members (i.e. entry_point_hi).
  * This might cuase problems if we ever want to port to a processor with different bitness...
  */
-__attribute__((section(".stivalehdr"), used)) // Fuck vscode
+__attribute__((section(".stivale2hdr"), used)) // Fuck vscode
 static struct stivale2_header stivale2_header = {
     .entry_point = 0,
     .stack = (uintptr_t)&stack + sizeof(stack),
-    .flags = (1 << 1) | (1 << 2),
+    .flags = (1 << 2),
     .tags = (uintptr_t)&framebuffer_hdr_tag};
 
 void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id)
@@ -57,7 +57,7 @@ void _start(struct stivale2_struct *stivale2_struct)
     }
 
     void (*term_write)(uint64_t ptr, uint64_t length) = (void *)(uintptr_t)term_str_tag->term_write;
-    term_write((uint64_t)(uintptr_t)STARTUP_MESSAGE, sizeof(STARTUP_MESSAGE) - 1);
+    term_write((uintptr_t)STARTUP_MESSAGE, sizeof(STARTUP_MESSAGE) - 1);
 
 hang:
     for (;;)
