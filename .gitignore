@@ -1,1 +1,7 @@
 .vscode/
+
+# Binary Files
+*.o
+*.d
+*.iso
+*.elf
