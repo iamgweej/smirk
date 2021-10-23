@@ -1,8 +1,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include <font8x16.h>
-#include <fbcon.h>
+#include <logging/fbcon.h>
 
 #include "include/stivale2.h"
 
@@ -67,7 +66,9 @@ void _start(struct stivale2_struct *stivale2_struct)
                tag_framebuffer->framebuffer_bpp,
                tag_framebuffer->framebuffer_addr);
 
-    puts(&fbcon.console, "hello");
+
+    puts(&fbcon.logger, "Hello, World!\n");
+    puts(&fbcon.logger, "How Are you?");
 
     for (;;) {
         asm ("hlt");

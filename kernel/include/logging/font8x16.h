@@ -1,6 +1,8 @@
 #ifndef _DEVICES_FBCON_FONT8X16_H
 #define _DEVICES_FBCON_FONT8X16_H
 
+#define FONT_HEIGHT (16)
+#define FONT_WIDTH (8)
 
 static const char font_8x16[] = {
     /* 0 0x00 '^@' */
