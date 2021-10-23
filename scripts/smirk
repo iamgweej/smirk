@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+
+
+smirk_dir="$(cd "$(dirname "$0")" >/dev/null 2>&1; cd ..; pwd -P)"
+
+set_profile_file=$smirk_dir/.profile
+subscripts_dir="$smirk_dir/scripts/subscripts"
+
+EXIT_SUCCESS=0
+EXIT_FAILURE=1
+
+
+function main {
+    # Extract subcommand argument
+    subcommand=help
+
+    while [[ $# > 0 ]]; do
+        case $1 in
+            help|list|set|build|clean|spotless|emu)
+                subcommand=$1
+                shift
+                break
+                ;;
+            *)
+                help
+                exit $EXIT_FAILURE
+                ;;
+        esac
+    done
+
+    # Extract profile argument
+    profile=""
+
+    if [[ $# -gt 0 ]]; then
+        profile="$1"
+    elif  [[ -f $set_profile_file ]]; then
+        profile=`cat $set_profile_file`
+    fi
+
+    # Call subcommand
+    export profile
+    export build_dir="$smirk_dir/build-$profile"
+    export smirk_build_dir=$build_dir/smirk
+
+    $subcommand
+    exit $EXIT_SUCCESS
+}
+
+
+# help: print a quick-help menu
+function help {
+cat <<EOF
+Smirk quick help.
+Build directory defaults to 'build-<target>'.
+
+Available commands:
+    build     - Build Smirk and the required toolchain.
+    clean     - Clean non-toolchain build files.
+    spotless  - Clean all build files.
+    emu       - Run the kernel under Qemu.
+    help      - This help menu.
+    list      - List supported targets.
+
+Available options:
+    --target <target>:  Select target for subcommand.
+
+Example:
+    smirk list
+    smirk build --target=i686-pc
+    smirk emu
+
+EOF
+}
+
+
+# list: list supported targets
+function list {
+    ls -1 $smirk_dir/profiles | cut -d '.' -f 1
+}
+
+
+# set <target>: configure the build target
+function set {
+    valid_profiles=$(sh -c "ls -1 $smirk_dir/profiles | cut -d '.' -f 1")
+
+    for p in $valid_profiles; do
+        if [[ $profile == $p ]]; then
+            echo $profile > $smirk_dir/.profile
+            exit $EXIT_SUCCESS
+        fi
+    done
+
+    echo "$profile: Not a supported profile, try \`smirk list\`"
+    exit $EXIT_FAILURE
+}
+
+
+# build [target]: bootstrap and build for target
+function build {
+    echo $profile
+    $subscripts_dir/build.sh $profile && exit $EXIT_SUCCESS
+    exit $EXIT_FAILURE
+}
+
+
+# clean: clean non-toolchain build files
+function clean {
+    echo "rm -rf $smirk_build_dir"
+    rm -rf $smirk_build_dir
+
+    echo "rm -rf $build_dir/drive.hdd"
+    rm -rf $build_dir/drive.hdd
+
+    exit $EXIT_SUCCESS
+}
+
+
+# spotless: clean all build files
+function spotless {
+    rm -rfI $build_dir
+
+    exit $EXIT_FAILURE
+}
+
+
+# emu [target]: qemu the target build
+function emu {
+    $subscripts_dir/emu.sh && exit $EXIT_SUCCESS
+
+    exit $EXIT_FAILURE
+}
+
+main $@
+
