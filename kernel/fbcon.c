@@ -14,7 +14,7 @@
 void putc_fbcon32(console_t *console, char chr, uint16_t x, uint16_t y)
 {
     fbcon_t *fbcon = (fbcon_t *) console;
-    uint32_t (*fb)[fbcon->height][fbcon->width] = fbcon->framebuffer;
+    uint32_t (*fb)[fbcon->height][fbcon->width] = (void*)fbcon->framebuffer;
 
     const char *chr_bmp = &font_8x16[chr * 16];
 

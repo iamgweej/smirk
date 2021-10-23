@@ -67,11 +67,9 @@ void _start(struct stivale2_struct *stivale2_struct)
                tag_framebuffer->framebuffer_bpp,
                tag_framebuffer->framebuffer_addr);
 
-    puts(&fbcon, "hello");
+    puts(&fbcon.console, "hello");
 
     for (;;) {
-        register int foo asm("rax") = 0xcafebabe;
-        asm ("pause");
+        asm ("hlt");
     }
-
 }
