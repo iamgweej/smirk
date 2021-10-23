@@ -5,3 +5,6 @@
 *.d
 *.iso
 *.elf
+
+# Build files
+build-*
