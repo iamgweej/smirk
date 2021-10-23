@@ -37,7 +37,7 @@ static struct stivale2_header stivale2_header = {
 
 void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id)
 {
-    struct stivale2_tag *current_tag = (void *)stivale2_struct->tags;
+    struct stivale2_tag *current_tag = (void *)(uintptr_t)stivale2_struct->tags;
     while (current_tag != NULL && current_tag->identifier != id)
     {
         current_tag = (void *)current_tag->next;
@@ -56,8 +56,8 @@ void _start(struct stivale2_struct *stivale2_struct)
         goto hang;
     }
 
-    void (*term_write)(uint64_t ptr, uint64_t length) = (void *)term_str_tag->term_write;
-    term_write((uint64_t)STARTUP_MESSAGE, sizeof(STARTUP_MESSAGE) - 1);
+    void (*term_write)(uint64_t ptr, uint64_t length) = (void *)(uintptr_t)term_str_tag->term_write;
+    term_write((uint64_t)(uintptr_t)STARTUP_MESSAGE, sizeof(STARTUP_MESSAGE) - 1);
 
 hang:
     for (;;)
