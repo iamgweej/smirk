@@ -6,3 +6,6 @@
 	path = third-party/gcc
 	url = git://gcc.gnu.org/git/gcc.git
 	branch = releases/gcc-11
+[submodule "third-party/limine"]
+	path = third-party/limine
+	url = git@github.com:limine-bootloader/limine.git
