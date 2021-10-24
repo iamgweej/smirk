@@ -1,4 +1,11 @@
-.vscode/
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+compile_commands.json
 
 # Binary Files
 *.o
@@ -8,3 +15,4 @@
 
 # Build files
 build-*
+.gdb_history
